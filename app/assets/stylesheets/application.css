@@ -19,6 +19,7 @@ H1 { text-align: center }
 .navbar-default {
   background-color: #009aee;
   border-color: #110dea;
+  border-radius: 0;
 }
 .navbar-default .navbar-brand {
   color: #ecf0f1;
