@@ -1,34 +1,96 @@
 <h1>Is my Industry still Growing?</h1>
-<br>
-<div class="row">
-  <div class="col-md-4">
-  	<div class="dropdown">
-		  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-		    Select Industry
-		    <span class="caret"></span>
-		  </button>
-		  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-		    <li><p>Agriculture, Forestry and Fishing</p></li>
-		    <li><p>Mining</p></li>
-		    <li><p>Manufacturing</p></li>
-		    <li><p>Electricity, Gas, Water and Waste Services</p></li>
-		    <li><p>Construction</p></li>
-		    <li><p>Wholesale Trade</p></li>
-		    <li><p>Retail Trade</p></li>
-		    <li><p>Accommodation and Food Services</p></li>
-		    <li><p>Transport, Postal and Warehousing</p></li>
-		    <li><p>Information Media and Telecommunications</p></li>
-		    <li><p>Financial and Insurance Services</p></li>
-		    <li><p>Rental, Hiring and Real Estate Services</p></li>
-		    <li><p>Professional, Scientific and Technical Services</p></li>
-		    <li><p>Administrative and Support Services</p></li>
-		    <li><p>Public Administration and Safety</p></li>
-		    <li><p>Education and Training</p></li>
-		    <li><p>Health Care and Social Assistance</p></li>
-		    <li><p>Arts and Recreation Services</p></li>
-		  </ul>
-		</div>
-  </div>
-  <div class="col-md-4">Return % net growth of Industry here</div>
-  <div class="col-md-4">Return Industries with Growth >0 && are related to the dropdown industry</div>
-</div>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Basic Bar Chart</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+    /* custom css styles will go here */
+
+    </style>
+</head>
+<body>
+
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script>
+	       var margin = {top:0, right:0, bottom:20, left:50},
+	    width  = 800,
+	    height = 500;
+
+	var svg = d3.select("body")
+	    .append("svg")
+	    .attr("width", "100%")
+	    .attr("height", "100%")
+	    .attr("viewBox", "0 0 " + width + " " + height);
+
+	var yScale = d3.scale.linear()
+	    .range([height - margin.top - margin.bottom, 0]);
+
+	var xScale = d3.scale.ordinal()
+	    .rangeRoundBands([0, width - margin.right - margin.left], .1);
+
+
+	var xAxis = d3.svg.axis()
+	    .scale(xScale)
+	    .orient("bottom");
+
+	var yAxis = d3.svg.axis()
+	    .scale(yScale)
+	    .orient("left")
+	    .tickFormat(d3.format("$,"));//...then add this line, a tickFormat for currency
+
+
+	d3.csv("data_updated.csv", function(error, data){
+		d["2011 of Business"] = +d["2011 of Business"]; 
+		d[" 2014 of Business"] = +d[" 2014 of Business"]; 
+		d["change"] = +d["change"]; 
+		d["percentage change"] = +d["percentage change"]; 
+		d["perc difference rounded "] = +d["perc difference rounded"]; 
+
+
+	    return d;
+	})
+
+
+	yScale.domain([0, d3.max(data, function(d){ return d["change"]; })]);
+
+	//xscale is unique values in your data (Age Group, since they are all different)
+	xScale.domain(data.map(function(d){ return d["Industry"]; }));
+
+
+	svg.append("g")
+	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+	    .selectAll(".bar")
+	    .data(data)
+	    .enter()
+	    .append("rect")
+	    .attr("class", "bar")
+	    .attr("x", function(d){ return xScale(d["Industry"]); })
+	    .attr("y", function(d){ return yScale(d["change"]); })
+	    .attr("height", function(d){ return height - margin.top - margin.bottom - yScale(d["change"]); })
+	    .attr("width", function(d){ return xScale.rangeBand(); });
+
+	 //adding y axis to the left of the chart
+	svg.append("g")
+	    .attr("class", "y axis")
+	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+	    .call(yAxis);
+
+	//adding x axis to the bottom of chart
+	svg.append("g")
+	    .attr("class", "x axis")
+	    .attr("transform", "translate(" + margin.left + "," + (height - margin.bottom) + ")")
+	    .call(xAxis);
+
+	svg.append("g")
+	    .attr("transform", "translate(" + (width/2) + ", 15)")
+	    .append("text")
+	    .text("Stock Wealth by Age")
+	    .style({"text-anchor":"middle", "font-family":"Arial", "font-weight":"800"}); //your d3 code will go here
+
+
+    </script>
+</body>
+</html>

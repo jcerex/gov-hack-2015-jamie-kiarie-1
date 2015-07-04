@@ -25,16 +25,22 @@ var yAxis = d3.svg.axis()
     .tickFormat(d3.format("$,"));//...then add this line, a tickFormat for currency
 
 
-d3.csv("stockowners.csv", function(error, data){
-d["Median Price"] = +d["Median Price"]; 
+d3.csv("data_updated.csv", function(error, data){
+	d["2011 of Business"] = +d["2011 of Business"]; 
+	d[" 2014 of Business"] = +d[" 2014 of Business"]; 
+	d["change"] = +d["change"]; 
+	d["percentage change"] = +d["percentage change"]; 
+	d["perc difference rounded "] = +d["perc difference rounded"]; 
+
+
     return d;
 })
 
 
-yScale.domain([0, d3.max(data, function(d){ return d["Median Price"]; })]);
+yScale.domain([0, d3.max(data, function(d){ return d["change"]; })]);
 
 //xscale is unique values in your data (Age Group, since they are all different)
-xScale.domain(data.map(function(d){ return d["Age Group"]; }));
+xScale.domain(data.map(function(d){ return d["Industry"]; }));
 
 
 svg.append("g")
@@ -44,9 +50,9 @@ svg.append("g")
     .enter()
     .append("rect")
     .attr("class", "bar")
-    .attr("x", function(d){ return xScale(d["Age Group"]); })
-    .attr("y", function(d){ return yScale(d["Median Price"]); })
-    .attr("height", function(d){ return height - margin.top - margin.bottom - yScale(d["Median Price"]); })
+    .attr("x", function(d){ return xScale(d["Industry"]); })
+    .attr("y", function(d){ return yScale(d["change"]); })
+    .attr("height", function(d){ return height - margin.top - margin.bottom - yScale(d["change"]); })
     .attr("width", function(d){ return xScale.rangeBand(); });
 
  //adding y axis to the left of the chart
